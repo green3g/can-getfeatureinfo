@@ -1,0 +1,30 @@
+<ul id="log"></ul>
+
+<script type="text/javascript" src="../../node_modules/steal/steal.js">
+    import Factory from 'index';
+    import CanMap from 'can/map/';
+
+
+    let log = document.getElementById('log');
+
+    function logger(text) {
+        let el = document.createElement('li');
+        el.innerHTML = text;
+        log.appendChild(el);
+    }
+
+    let State = Factory({
+        name: 'state',
+        url: 'http://localhost/geoserver/topp/wms'
+    });
+
+    State.getList({
+        bbox: [-102.6123046875,27.2900390625,-93.7353515625,36.1669921875],
+        projection: 'EPSG:4326',
+        x: 50,
+        y: 50,
+        layers: ['topp:states']
+    }).then(data => {
+        console.log('features!', data);
+    });
+</script>
