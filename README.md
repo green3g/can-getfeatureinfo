@@ -4,23 +4,15 @@
 -->
 
 # can-getfeatureinfo
-A client data model for interacting with data from [`flask-restless`](https://github.com/jfinkels/flask-restless)
-Note: can-getfeatureinfo has been built to work with the JSON API specification that
-flask-restless is currently developing. To utilize this package, the development version 1.0.0b should be used.
-
+A client data model for interacting with data from a wms using
+the standard GetFeatureInfo request.
 
 # Features
-- Full crud api for retrieving, updating, and deleting data
-- Retrieve lists of data with filtering, pagination, and sorting
-- Pure data model, quickly build your own user interface, or use [can-crud](https://github.com/roemhildtg/can-crud-app)
+ - Retrieve geojson features from a WMS server like Geoserver
 
 # Quick Start
 
 ```
-#install flask-restless from github:
-virtualenv env
-source env/bin/activate
-pip install -e git://github.com/jfinkels/flask-restless.git#egg=flask-restless
 
 #install can-getfeatureinfo
 npm install can-getfeatureinfo --save
@@ -31,7 +23,20 @@ npm run export
 
 ```javascript
 require(['can-getfeatureinfo/dist/amd/index'], function(Factory){
-  var Task = Factory(/* ... */);
+  var State = Factory({
+      name: 'state',
+      url: 'http://localhost/geoserver/topp/wms'
+  });
+
+  State.getList({
+      bbox: [-102.6123046875,27.2900390625,-93.7353515625,36.1669921875],
+      projection: 'EPSG:4326',
+      x: 50,
+      y: 50,
+      layers: ['topp:states']
+  }).then(function(data) {
+      console.log('features!', data);
+  });
 });
 ```
 
@@ -39,95 +44,51 @@ require(['can-getfeatureinfo/dist/amd/index'], function(Factory){
 
 ```javascript
 var Factory = require('can-getfeatureinfo/dist/cjs/index');
-var Task = Factory(/* .... */);
+var State = Factory({
+    name: 'state',
+    url: 'http://localhost/geoserver/topp/wms'
+});
+
+State.getList({
+    bbox: [-102.6123046875,27.2900390625,-93.7353515625,36.1669921875],
+    projection: 'EPSG:4326',
+    x: 50,
+    y: 50,
+    layers: ['topp:states']
+}).then(function(data) {
+    console.log('features!', data);
+});
 ```
 
 ## StealJS - ES6 Style Example
 
 ```javascript
-import Factory from 'can-getfeatureinfo';
+import Factory from 'index';
 import CanMap from 'can/map/';
 
-let TaskMap = CanMap.extend({
-  name: 'My Task',
-  description: 'More details about the task'
-  is_complete: false,
+let State = Factory({
+    name: 'state',
+    url: 'http://localhost/geoserver/topp/wms'
 });
 
-let Task = Factory({
-  map: TaskMap,
-
-  //this is the default id property
-  //idProp: 'id',
-  name: 'task',
-  url: '/api/tasks'
+State.getList({
+    bbox: [-102.6123046875,27.2900390625,-93.7353515625,36.1669921875],
+    projection: 'EPSG:4326',
+    x: 50,
+    y: 50,
+    layers: ['topp:states']
+}).then(data => {
+    console.log('features!', data);
 });
-
-//fetch the list with no parameters
-let deferred = Task.getList({});
-
-//fetch the list with sorting
-deferred = Task.getList({
-  sort: {
-    type: 'asc',
-    fieldName: 'description'
-  }
-});
-
-//fetch the list with a filter
-deferred = Task.getList({
-  filters: [{
-    name: 'description',
-    operator: 'like',
-    value: '%details%'
-  }]
-});
-
-//fetch one item by id
-deferred = Task.get({
-  id: 1
-});
-```
 
 # Running the tests
-Set up flask restless:
 
-```
-cd test/demo
-virtualenv env
-source env/bin/activate
-pip install -r pip_require.txt
-python run.py
-```
+`npm run test`
 
-Once the development server is running, run the tests either in a browser at `index.html` or by running
-
-```
-npm run test
-```
-
-# Limitations
-**Filtering**:
-
-Currently the only filter syntax supported is the array type with `name`, `op`, and `val`. Each filter in the array will be "and". Or is not currently implemented. For example:
-
-```
-deferred = Task.getList({
-  filters: [{
-    name: 'description',
-    operator: 'like',
-    value: '%details%'
-  }, {
-    name: 'birth_date',
-    operator: 'after',
-    value: '10/5/2005'
-  }]
-});
-```
-
-Will query person where name contains "details" AND where birth_date is after October 5, 2005.
+Or open `test/index.html` in a browser
 
 # Contributing
+
 Contributions from anyone are welcome!
 - Pull Requests
 - Report Issues via the issue tracker on github
