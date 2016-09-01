@@ -1,7 +1,7 @@
 {
   "name": "can-getfeatureinfo",
   "version": "0.3.0",
-  "description": "can-connect client for Flask-Restless",
+  "description": "can-connect client for GetFeatureInfo wms requests",
   "repository": "https://github.com/roemhildtg/can-getfeatureinfo",
   "watch": {
     "lint": "**/*.js",
