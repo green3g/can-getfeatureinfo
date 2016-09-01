@@ -15,7 +15,7 @@
 
     let State = Factory({
         name: 'state',
-        url: 'http://localhost/geoserver/topp/wms'
+        url: 'http://demo.opengeo.org/geoserver/wms'
     });
 
     State.getList({
@@ -25,6 +25,7 @@
         y: 50,
         layers: ['topp:states']
     }).then(data => {
+        console.clear();
         console.log('features!', data);
     });
 </script>
